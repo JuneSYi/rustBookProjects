@@ -1,3 +1,20 @@
+use std::env;
+
 fn main() {
-    println!("Hello, world!");
+    let args: Vec<String> = env::args().collect();
+    // std::env::args function returns an iterator of the command line arguments passed
+    // we can call the collect() method on an iterator to turn it into a collection, like a vector, that contains all
+    // the elements the iterator produces
+
+    // dbg!(args);
+    // debugging macro that prints the value of an expression along with the file name and line number where the macro is called
+    // it returns the value of the expression
+
+    let query = &args[1];
+    // save the first argument
+    let file_path = &args[2];
+    // save the second argument
+
+    println!("Searching for {}", query);
+    println!("In file {}", file_path);
 }
