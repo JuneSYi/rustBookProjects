@@ -14,6 +14,7 @@ fn main() {
         // if the 'Result' is an 'Ok' value, this method's behavior is simila rto 'unwrap'
         // it returns the inner value 'Ok' is wrapping
         // if the value is an 'Err' value, this method calls the code in the 'closure'
+
         println!("Problem parsing arguments: {err}");
         process::exit(1);
         // process::exit function will stop the program immediately and return the number that was passed

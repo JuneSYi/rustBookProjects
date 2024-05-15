@@ -31,7 +31,42 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // to handle
     // from std::fs library, read_to_string() takes an argument, opens the file, and returns a
     // std::io::Result<String> of the file's contents
-    println!("With text:\n{contents}");
+    for line in search(&config.query, &contents) {
+        println!("{line}");
+    }
+
+    // println!("With text:\n{contents}");
 
     Ok(())
+}
+
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    // str slices used to refernce slices of the argument contents
+    // meaning the output/expression will live as long as the data passed
+    // into the function
+    let mut results = Vec::new();
+    for line in contents.lines() {
+        // lines() returns an iterator
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+    // vec![]
+    results
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
 }
