@@ -1,5 +1,7 @@
 use std::env;
-use std::fs;
+use std::process;
+
+use simple_command_line_tool::Config;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -7,21 +9,26 @@ fn main() {
     // we can call the collect() method on an iterator to turn it into a collection, like a vector, that contains all
     // the elements the iterator produces
 
-    // dbg!(args);
-    // debugging macro that prints the value of an expression along with the file name and line number where the macro is called
-    // it returns the value of the expression
+    let config = Config::build(&args).unwrap_or_else(|err| {
+        // unwrap_or_else() allows us to defin some custom, non-pacnic! error handling
+        // if the 'Result' is an 'Ok' value, this method's behavior is simila rto 'unwrap'
+        // it returns the inner value 'Ok' is wrapping
+        // if the value is an 'Err' value, this method calls the code in the 'closure'
+        println!("Problem parsing arguments: {err}");
+        process::exit(1);
+        // process::exit function will stop the program immediately and return the number that was passed
+        // as the exit status code. simila rto panic!, but no longer all the extra output
+    });
 
-    let query = &args[1];
-    // save the first argument
-    let file_path = &args[2];
-    // save the second argument
+    // let (query, file_path) = parse_config(&args);
+    // saves the first and 2nd arguments
 
-    println!("Searching for {}", query);
-    println!("In file {}", file_path);
+    println!("Searching for {}", config.query);
+    println!("In file {}", config.file_path);
 
-    let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
-    // from std::fs library, read_to_string() takes an argument, opens the file, and returns a
-    // std::io::Result<String> of the file's contents
-
-    println!("With text:\n{contents}");
+    // run(config);
+    if let Err(e) = simple_command_line_tool::run(config) {
+        println!("Application error: {e}");
+        process::exit(1);
+    }
 }
