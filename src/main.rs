@@ -15,21 +15,13 @@ fn main() {
         // it returns the inner value 'Ok' is wrapping
         // if the value is an 'Err' value, this method calls the code in the 'closure'
 
-        println!("Problem parsing arguments: {err}");
+        eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
-        // process::exit function will stop the program immediately and return the number that was passed
-        // as the exit status code. simila rto panic!, but no longer all the extra output
     });
-
-    // let (query, file_path) = parse_config(&args);
-    // saves the first and 2nd arguments
-
-    println!("Searching for {}", config.query);
-    println!("In file {}", config.file_path);
-
-    // run(config);
+    // process::exit function will stop the program immediately and return the number that was passed
+    // as the exit status code. simila rto panic!, but no longer all the extra output
     if let Err(e) = simple_command_line_tool::run(config) {
-        println!("Application error: {e}");
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
