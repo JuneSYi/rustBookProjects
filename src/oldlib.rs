@@ -1,4 +1,4 @@
-use std::env;
+// use std::env;
 use std::error::Error;
 use std::fs;
 
@@ -8,23 +8,15 @@ pub struct Config {
     pub ignore_case: bool,
 }
 
+// tied to oldmain.rs
 impl Config {
-    // Config::build function in main.rs has signature where the parameter 'args' has a generic type with the trait bounds
-    // 'impl Iterator<Item = String>' instead of &[String]. this usage of 'impl Trait' means that 'args' can be any
-    // type that implements the 'Iterator' type and returns 'String' items
-    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
-        args.next(); // first .next() is the name of the program so we do nothing
-
-        let query = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Didn't get a query string"),
-        };
-
-        let file_path = match args.next() {
-            Some(arg) => arg,
-            None => return Err("Didn't get a file path"),
-        };
-
+    pub fn build(args: &[String]) -> Result<Config, &'static str> {
+        if args.len() < 3 {
+            // panic!("not enough arguments");
+            return Err("not enough arguments");
+        }
+        let query = args[1].clone();
+        let file_path = args[2].clone();
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
         Ok(Config {
@@ -63,18 +55,33 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    contents
-        .lines()
-        .filter(|line| line.contains(query))
-        .collect()
+    // str slices used to refernce slices of the argument contents
+    // meaning the output/expression will live as long as the data passed
+    // into the function
+    let mut results = Vec::new();
+    for line in contents.lines() {
+        // lines() returns an iterator
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+    // vec![]
+    results
 }
 
+// to_lowercase(), lowercases the query string and assign it to query
+// calling to_lowercase() creates new data rather than referencing existing data, it's now a String rather than str
+// because its now a String, when we pass it into the for loop below, we add a '&' because 'contains()' only takes string slices
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
-    contents
-        .lines()
-        .filter(|line| line.contains(query.as_str()))
-        .collect()
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&query) {
+            results.push(line);
+        }
+    }
+    results
 }
 
 #[cfg(test)]
