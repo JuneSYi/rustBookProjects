@@ -1,6 +1,0 @@
-[package]
-name = "rustbook_multithreadedWebServer"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]

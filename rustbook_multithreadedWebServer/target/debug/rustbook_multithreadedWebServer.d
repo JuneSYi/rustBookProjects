@@ -1,1 +1,0 @@
-/Users/juneyi/Desktop/code/rustBookProjects/rustbook_multithreadedWebServer/target/debug/rustbook_multithreadedWebServer: /Users/juneyi/Desktop/code/rustBookProjects/rustbook_multithreadedWebServer/src/main.rs
